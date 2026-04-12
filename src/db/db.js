@@ -1,0 +1,17 @@
+const mongoose = require("mongoose");
+
+
+async function connectDB(){
+  try{
+
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Database Connected")
+
+  }
+  catch(error){
+    console.error("Database connection error:", error);
+    process.exit(1); //if an error occurs immediately terminate the current process with "Uncaught fatal error"
+  }
+}
+
+module.exports = connectDB;
