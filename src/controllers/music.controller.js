@@ -119,8 +119,14 @@ async function createAlbum(req, res){
 
 async function getAllMusics(req, res){
     //also ("artist", "whatever u want to display from artist")
-  const musics = await musicModel.find().populate("artist"); 
+  const musics = await musicModel.find()
+        .limit(20)
+        .populate("artist")
+        .skip(2); //skip first 2 then display the next 20
+        
   //populate is used to get the artist name from the artist id, so we are populating the artist field with the name of the artist; before it was just artist id now we have the detail of the artist also
+
+  //we use limit(20) becuase we dont want to crash servers with soo much song data that is all of the songs data at once, so we will just display 20 songs at a time on the home screen and then we can implement pagination later to display more songs when user scrolls down
 
   res.status(200).json({
     message:"Musics fetched Succesfully",
