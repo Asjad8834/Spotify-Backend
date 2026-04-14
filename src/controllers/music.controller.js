@@ -118,7 +118,7 @@ async function createAlbum(req, res){
 
 
 async function getAllMusics(req, res){
-
+    //also ("artist", "whatever u want to display from artist")
   const musics = await musicModel.find().populate("artist"); 
   //populate is used to get the artist name from the artist id, so we are populating the artist field with the name of the artist; before it was just artist id now we have the detail of the artist also
 
@@ -129,4 +129,35 @@ async function getAllMusics(req, res){
 
 }
 
-module.exports = { createMusic, createAlbum, getAllMusics };
+
+async function getAllAlbums(req, res){
+
+  const albums = await albumModel.find().select("title artist -musics").populate("artist", "username email");
+
+  //select is used to select the fields that we want to display, here we are selecting title and artist and we are excluding musics field by using -musics, so musics field will not be displayed in the response; and for artist we are populating only username and email fields(we did -musics because imagine their are 100 songs in an album and their 30 albums that is a lot of overghead that will be displayed on the home screen and it can freeze, so we will display musics not now but later)
+  
+  
+  res.status(200).json({
+    message:"Albums fetched Succesfully",
+    albums: albums,
+  })
+
+}
+
+
+async function getAlbumById(req, res){
+
+  const albumId = req.params.albumId;
+
+  const album = await albumModel.findById(albumId).populate("artist", "username email").populate("musics");
+
+  return res.status(200).json({
+    message:"Album fetched Succesfully",
+    album: album,
+  })
+
+}
+
+
+
+module.exports = { createMusic, createAlbum, getAllMusics, getAllAlbums, getAlbumById };
